@@ -13,12 +13,6 @@ services:
     environment:
       - PYTHONPATH=/workspace
       - DEVELOPMENT=true
-    ports:
-      - "8001:8001"   # FastAPI Backend
-      - "8501:8501"   # Streamlit Frontend
-      - "9000:9000"   # MinIO API
-      - "9001:9001"   # MinIO Console
-      - "5432:5432"   # PostgreSQL
     depends_on:
       - postgres-dev
       - minio-dev
@@ -53,38 +47,8 @@ services:
     networks:
       - dev-network
 
-  # Backend service for testing
-  backend-dev:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
-    container_name: backend-dev
-    environment:
-      - PYTHONPATH=/app
-    env_file:
-      - ../env.template
-    depends_on:
-      - postgres-dev
-      - minio-dev
-    networks:
-      - dev-network
-    profiles:
-      - testing
-
-  # Frontend service for testing  
-  frontend-dev:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    container_name: frontend-dev
-    environment:
-      - API_URL=http://backend-dev:8001
-    depends_on:
-      - backend-dev
-    networks:
-      - dev-network
-    profiles:
-      - testing
+  # Note: Backend and frontend services are available via the main docker-compose.yml
+  # Use 'docker-compose up' from the project root to start the full stack
 
 networks:
   dev-network:

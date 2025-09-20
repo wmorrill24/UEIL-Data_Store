@@ -4,16 +4,12 @@
   "service": "dev-environment",
   "workspaceFolder": "/workspace",
   
-  // Port forwarding for all services
-  "forwardPorts": [8001, 8501, 9000, 9001, 5432],
+  // Port forwarding for development services
+  "forwardPorts": [5432, 9000, 9001],
   "portsAttributes": {
-    "8001": {
-      "label": "FastAPI Backend",
-      "onAutoForward": "notify"
-    },
-    "8501": {
-      "label": "Streamlit Frontend", 
-      "onAutoForward": "notify"
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
     },
     "9000": {
       "label": "MinIO API",
@@ -22,10 +18,6 @@
     "9001": {
       "label": "MinIO Console",
       "onAutoForward": "notify"
-    },
-    "5432": {
-      "label": "PostgreSQL",
-      "onAutoForward": "silent"
     }
   },
 

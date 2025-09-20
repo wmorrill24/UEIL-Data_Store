@@ -37,18 +37,7 @@ RUN pip install --no-cache-dir \
     psycopg2-binary \
     pydantic-settings
 
-# Install development dependencies from project
-COPY ../backend/requirements.txt /tmp/backend-requirements.txt
-COPY ../frontend/requirements.txt /tmp/frontend-requirements.txt
-COPY ../clients/python/pyproject.toml /tmp/python-client-requirements.txt
-
-RUN pip install --no-cache-dir -r /tmp/backend-requirements.txt
-RUN pip install --no-cache-dir -r /tmp/frontend-requirements.txt
-
-# Install Python client library in development mode
-RUN if [ -f /tmp/python-client-requirements.txt ]; then \
-        pip install --no-cache-dir -e /workspace/clients/python; \
-    fi
+# All development dependencies are already installed above
 
 # Create a non-root user
 RUN useradd -m -s /bin/bash developer && \
