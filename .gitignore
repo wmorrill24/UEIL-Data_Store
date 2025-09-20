@@ -1,0 +1,120 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.egg-info/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env
+.venv
+ENV/
+env.bak/
+venv.bak/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Documentation
+docs/_build/
+.readthedocs.yml
+
+# Docker
+.dockerignore
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+# Environment files (keep .env.example)
+.env
+.env.local
+.env.production
+
+# Test data (keep structure, ignore content)
+tests/data/
+tests/uploads/
+tests/downloads/
+
+# Build artifacts
+*.tar.gz
+*.zip
+*.rar
+
+# MATLAB
+*.asv
+*.m~
+
+# MinIO data (if running locally)
+minio-data/
+
+# PostgreSQL data (if running locally)
+postgres-data/
+
+# Node.js (if any frontend dependencies)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# IDE specific
+*.sublime-project
+*.sublime-workspace
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# Local development
+.local/
+local/

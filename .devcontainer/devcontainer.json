@@ -1,0 +1,92 @@
+{
+  "name": "UEIL Data Store - Full Development Environment",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "dev-environment",
+  "workspaceFolder": "/workspace",
+  
+  // Port forwarding for all services
+  "forwardPorts": [8001, 8501, 9000, 9001, 5432],
+  "portsAttributes": {
+    "8001": {
+      "label": "FastAPI Backend",
+      "onAutoForward": "notify"
+    },
+    "8501": {
+      "label": "Streamlit Frontend", 
+      "onAutoForward": "notify"
+    },
+    "9000": {
+      "label": "MinIO API",
+      "onAutoForward": "silent"
+    },
+    "9001": {
+      "label": "MinIO Console",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    }
+  },
+
+  // VS Code extensions for development
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.pylance",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "ms-vscode.docker",
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "eamodio.gitlens",
+        "ms-vscode.vscode-github-pullrequest",
+        "ms-toolsai.jupyter",
+        "ms-toolsai.vscode-jupyter-cell-tags",
+        "ms-toolsai.vscode-jupyter-slideshow"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "python.sortImports.args": ["--profile", "black"],
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": true
+        },
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/*.pyc": true,
+          "**/venv": true,
+          "**/.venv": true
+        }
+      }
+    }
+  },
+
+  // Post-create commands to set up the environment
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+
+  // Features to install
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+
+  // Environment variables
+  "containerEnv": {
+    "PYTHONPATH": "/workspace",
+    "DEVELOPMENT": "true"
+  },
+
+  // Mount the entire workspace
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+  ],
+
+  // Keep container running
+  "shutdownAction": "none"
+}

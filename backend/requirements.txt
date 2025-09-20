@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-multipart
+minio
+psycopg2-binary
+gitpython
+PyYAML
+requests
+pydantic-settings

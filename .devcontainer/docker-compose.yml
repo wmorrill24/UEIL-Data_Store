@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  # Main development environment
+  dev-environment:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ueil-dev-environment
+    volumes:
+      - ../:/workspace:cached
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - PYTHONPATH=/workspace
+      - DEVELOPMENT=true
+    ports:
+      - "8001:8001"   # FastAPI Backend
+      - "8501:8501"   # Streamlit Frontend
+      - "9000:9000"   # MinIO API
+      - "9001:9001"   # MinIO Console
+      - "5432:5432"   # PostgreSQL
+    depends_on:
+      - postgres-dev
+      - minio-dev
+    networks:
+      - dev-network
+    command: sleep infinity
+
+  # Development PostgreSQL database
+  postgres-dev:
+    image: postgres:13
+    container_name: postgres-dev
+    environment:
+      POSTGRES_USER: ${PG_USER:-postgres}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-postgres123}
+      POSTGRES_DB: ${PG_DATABASE:-metadata_db}
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ../backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - dev-network
+
+  # Development MinIO storage
+  minio-dev:
+    image: minio/minio:latest
+    container_name: minio-dev
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin123}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_dev_data:/data
+    networks:
+      - dev-network
+
+  # Backend service for testing
+  backend-dev:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: backend-dev
+    environment:
+      - PYTHONPATH=/app
+    env_file:
+      - ../env.template
+    depends_on:
+      - postgres-dev
+      - minio-dev
+    networks:
+      - dev-network
+    profiles:
+      - testing
+
+  # Frontend service for testing  
+  frontend-dev:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: frontend-dev
+    environment:
+      - API_URL=http://backend-dev:8001
+    depends_on:
+      - backend-dev
+    networks:
+      - dev-network
+    profiles:
+      - testing
+
+networks:
+  dev-network:
+    driver: bridge
+
+volumes:
+  postgres_dev_data:
+  minio_dev_data:

@@ -1,0 +1,68 @@
+services:
+  minio-server:
+    image: minio/minio:latest
+    container_name: minio-server
+    ports:
+      - "9000:9000"   # MinIO API port
+      - "9001:9001"   # MinIO Console port
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data   # Persistent storage for MinIO
+    networks:
+      - app-network
+
+  postgres-metadata-db:
+    image: postgres:13
+    container_name: postgres-metadata-db
+    ports:
+      - "5432:5432"  # Postgres port
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DATABASE}
+    volumes:
+      - postgres_db_data:/var/lib/postgresql/data   # Persistent storage for Postgres
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql   # Database initialization
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8001:8001"   # FastAPI backend port
+    volumes:
+      - ./backend/app:/app  # Mount your local app code into /app in the container for live reload
+    env_file:
+      - .env
+    depends_on:
+      - minio-server
+      - postgres-metadata-db
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "8501:8501"   # Streamlit frontend port
+    environment:
+      - API_URL=http://backend:8001
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:   # Shared network for all services
+
+volumes:
+  minio_data:              # Volume for MinIO data
+  postgres_db_data:        # Volume for Postgres data
