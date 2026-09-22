@@ -37,7 +37,7 @@ This system uses a service-oriented architecture with the following components:
 
 ### 1. Clone and Setup
 ```bash
-git clone <repository-url>
+git clone https://github.com/wmorrill24/UEIL-Data_Store.git
 cd UEIL-Data-Store
 cp .env.example .env
 # Edit .env with your configuration
